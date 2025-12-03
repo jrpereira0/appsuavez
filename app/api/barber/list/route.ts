@@ -11,9 +11,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const barbers = await prisma.user.findMany({
       where: {
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
         role: 'BARBER',
       },
       select: {

@@ -11,6 +11,8 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const { searchParams } = new URL(request.url)
     const queueId = searchParams.get('queueId')
 
@@ -25,7 +27,7 @@ export async function DELETE(request: NextRequest) {
     const queueItem = await prisma.queue.findFirst({
       where: {
         id: queueId,
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
       },
     })
 
@@ -44,7 +46,7 @@ export async function DELETE(request: NextRequest) {
     await prisma.$executeRaw`
       UPDATE "Queue"
       SET position = position - 1
-      WHERE "barbershopId" = ${session.user.barbershopId}
+      WHERE "barbershopId" = ${barbershopId}
         AND position > ${queueItem.position}
         AND status IN ('WAITING', 'ATTENDING')
     `

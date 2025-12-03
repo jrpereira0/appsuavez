@@ -11,6 +11,8 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
 
@@ -25,7 +27,7 @@ export async function DELETE(request: NextRequest) {
     const barber = await prisma.user.findFirst({
       where: {
         id: userId,
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
         role: 'BARBER',
       },
     })
@@ -43,7 +45,7 @@ export async function DELETE(request: NextRequest) {
       await tx.queue.deleteMany({
         where: {
           userId: userId,
-          barbershopId: session.user.barbershopId,
+          barbershopId: barbershopId,
         },
       })
 

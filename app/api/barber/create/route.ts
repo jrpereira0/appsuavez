@@ -12,6 +12,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const body = await request.json()
     const { name, email, password } = body
 
@@ -39,7 +41,7 @@ export async function POST(request: NextRequest) {
     // Buscar última posição na fila
     const lastQueue = await prisma.queue.findFirst({
       where: {
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
         status: 'WAITING',
       },
       orderBy: {
@@ -57,7 +59,7 @@ export async function POST(request: NextRequest) {
           email,
           password: hashedPassword,
           role: 'BARBER',
-          barbershopId: session.user.barbershopId,
+          barbershopId: barbershopId,
         },
         select: {
           id: true,
@@ -73,7 +75,7 @@ export async function POST(request: NextRequest) {
       await tx.queue.create({
         data: {
           userId: newBarber.id,
-          barbershopId: session.user.barbershopId!,
+          barbershopId: barbershopId!,
           position: newPosition,
           status: 'WAITING',
         },

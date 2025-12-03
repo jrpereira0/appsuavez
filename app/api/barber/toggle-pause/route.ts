@@ -11,6 +11,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const body = await request.json()
     const { userId, pauseReason } = body
 
@@ -27,7 +29,7 @@ export async function PUT(request: NextRequest) {
       const barber = await prisma.user.findFirst({
         where: {
           id: userId,
-          barbershopId: session.user.barbershopId,
+          barbershopId: barbershopId,
         },
       })
 
@@ -57,7 +59,7 @@ export async function PUT(request: NextRequest) {
         const currentQueue = await tx.queue.findFirst({
           where: {
             userId: userId,
-            barbershopId: session.user.barbershopId,
+            barbershopId: barbershopId,
           },
         })
 
@@ -67,7 +69,7 @@ export async function PUT(request: NextRequest) {
             // Pegar a maior posição atual
             const maxPosition = await tx.queue.findFirst({
               where: {
-                barbershopId: session.user.barbershopId,
+                barbershopId: barbershopId,
                 status: { in: ['WAITING', 'ATTENDING'] },
               },
               orderBy: { position: 'desc' },
@@ -95,7 +97,7 @@ export async function PUT(request: NextRequest) {
             // Subir todos que estavam depois dele
             await tx.queue.updateMany({
               where: {
-                barbershopId: session.user.barbershopId,
+                barbershopId: barbershopId,
                 position: { gt: currentPosition },
                 status: { in: ['WAITING', 'ATTENDING'] },
               },

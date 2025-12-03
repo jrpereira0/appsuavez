@@ -12,6 +12,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const body = await request.json()
     const { queueId, serviceType, value, notes } = body
 
@@ -25,7 +27,7 @@ export async function PUT(request: NextRequest) {
     const queueItem = await prisma.queue.findFirst({
       where: {
         id: queueId,
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
         status: 'ATTENDING',
       },
       include: {
@@ -46,7 +48,7 @@ export async function PUT(request: NextRequest) {
     // Buscar última posição na fila WAITING
     const lastWaitingQueue = await prisma.queue.findFirst({
       where: {
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
         status: 'WAITING',
       },
       orderBy: {

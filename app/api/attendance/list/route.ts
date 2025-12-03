@@ -11,6 +11,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
     const limit = searchParams.get('limit')
@@ -18,7 +20,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate')
 
     const where: any = {
-      barbershopId: session.user.barbershopId,
+      barbershopId: barbershopId,
       finishedAt: { not: null },
     }
 

@@ -11,6 +11,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const body = await request.json()
     const { userId, name, email } = body
 
@@ -25,7 +27,7 @@ export async function PUT(request: NextRequest) {
     const barber = await prisma.user.findFirst({
       where: {
         id: userId,
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
       },
     })
 

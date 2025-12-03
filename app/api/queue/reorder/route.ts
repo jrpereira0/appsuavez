@@ -11,6 +11,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const body = await request.json()
     const { queueId, newPosition } = body
 
@@ -24,7 +26,7 @@ export async function PUT(request: NextRequest) {
     const queueItem = await prisma.queue.findFirst({
       where: {
         id: queueId,
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
         status: 'WAITING', // Só pode reordenar quem está aguardando
       },
     })
@@ -49,7 +51,7 @@ export async function PUT(request: NextRequest) {
         await tx.$executeRaw`
           UPDATE "Queue"
           SET position = position - 1
-          WHERE "barbershopId" = ${session.user.barbershopId}
+          WHERE "barbershopId" = ${barbershopId}
             AND position > ${oldPosition}
             AND position <= ${newPosition}
             AND status = 'WAITING'
@@ -59,7 +61,7 @@ export async function PUT(request: NextRequest) {
         await tx.$executeRaw`
           UPDATE "Queue"
           SET position = position + 1
-          WHERE "barbershopId" = ${session.user.barbershopId}
+          WHERE "barbershopId" = ${barbershopId}
             AND position >= ${newPosition}
             AND position < ${oldPosition}
             AND status = 'WAITING'

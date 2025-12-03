@@ -11,6 +11,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const barbershopId = session.user.barbershopId
+
     const body = await request.json()
     const { queueId } = body
 
@@ -24,7 +26,7 @@ export async function PUT(request: NextRequest) {
     const queueItem = await prisma.queue.findFirst({
       where: {
         id: queueId,
-        barbershopId: session.user.barbershopId,
+        barbershopId: barbershopId,
       },
     })
 
@@ -39,7 +41,7 @@ export async function PUT(request: NextRequest) {
     const attendance = await prisma.attendance.create({
       data: {
         userId: queueItem.userId,
-        barbershopId: session.user.barbershopId!,
+        barbershopId: barbershopId!,
         startedAt: new Date(),
       },
     })
