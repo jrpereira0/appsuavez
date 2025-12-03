@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const barbershopId = session.user.barbershopId
+    const barbershopId = session.user.barbershopId!
 
     const body = await request.json()
     const { name, email, password } = body

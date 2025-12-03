@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const barbershopId = session.user.barbershopId
+    const barbershopId = session.user.barbershopId!
 
     const queue = await prisma.queue.findMany({
       where: {

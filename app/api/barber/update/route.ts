@@ -11,7 +11,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const barbershopId = session.user.barbershopId
+    const barbershopId = session.user.barbershopId!
 
     const body = await request.json()
     const { userId, name, email } = body
