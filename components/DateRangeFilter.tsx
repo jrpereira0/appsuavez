@@ -151,11 +151,11 @@ export default function DateRangeFilter({
           </label>
           <div className="relative">
             <DatePicker
-              selected={startDate}
+              selected={startDate || undefined}
               onChange={onStartDateChange}
               selectsStart
-              startDate={startDate}
-              endDate={endDate}
+              startDate={startDate || undefined}
+              endDate={endDate || undefined}
               maxDate={endDate || new Date()}
               dateFormat="dd/MM/yyyy"
               placeholderText="dd/mm/aaaa"
@@ -177,12 +177,12 @@ export default function DateRangeFilter({
           </label>
           <div className="relative">
             <DatePicker
-              selected={endDate}
+              selected={endDate || undefined}
               onChange={onEndDateChange}
               selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
+              startDate={startDate || undefined}
+              endDate={endDate || undefined}
+              minDate={startDate || undefined}
               maxDate={new Date()}
               dateFormat="dd/MM/yyyy"
               placeholderText="dd/mm/aaaa"
