@@ -1,0 +1,100 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                    🔧 CONFIGURAÇÃO NECESSÁRIA 🔧                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+Você está QUASE LÁ! Só falta configurar o banco de dados.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 1: Edite o arquivo .env.local
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Abra o arquivo: .env.local
+
+Cole isto (substitua a DATABASE_URL pela sua):
+
+DATABASE_URL="postgresql://seu-usuario:sua-senha@seu-host.neon.tech/neondb?sslmode=require"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="6Q9mXxOviD1SPVdGzEfdK7YTuv9083QMSH4L7jyV/JE="
+
+⚠️ IMPORTANTE: Você JÁ tem o NEXTAUTH_SECRET gerado! Use ele acima! ⚠️
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 2: Pegue a DATABASE_URL do Neon
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Opção A - Se JÁ tem conta no Neon:
+   1. Acesse: https://console.neon.tech
+   2. Clique no seu projeto
+   3. Copie a "Connection String"
+   4. Cole no .env.local
+
+Opção B - Se NÃO tem conta ainda:
+   1. Acesse: https://neon.tech
+   2. Clique "Sign Up" (pode usar GitHub)
+   3. Clique "Create Project"
+   4. Nome: "barbearia-fila"
+   5. Região: "US East"
+   6. Clique "Create"
+   7. Copie a Connection String que aparece
+   8. Cole no .env.local
+
+A Connection String parece com isso:
+postgresql://neondb_owner:npg_abc123@ep-cool-darkness-12345.us-east-2.aws.neon.tech/neondb?sslmode=require
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 3: Execute estes comandos (APÓS configurar o .env.local)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+No terminal, execute:
+
+1. Parar o servidor (se estiver rodando):
+   Ctrl + C
+
+2. Criar tabelas no banco:
+   npx prisma migrate dev --name init
+
+3. Adicionar dados de teste:
+   npx prisma db seed
+
+4. Iniciar servidor:
+   npm run dev
+
+5. Acessar:
+   http://localhost:3000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CREDENCIAIS DE TESTE (após o seed):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 Dono da barbearia:
+   Email: dono@exemplo.com
+   Senha: 123456
+
+✂️ Barbeiros:
+   Email: carlos@exemplo.com / Senha: 123456
+   Email: pedro@exemplo.com  / Senha: 123456
+   Email: lucas@exemplo.com  / Senha: 123456
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROBLEMAS?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Erro "Environment variable not found: DATABASE_URL"
+   → Você não configurou o .env.local ainda
+
+❌ Erro "Can't reach database server"
+   → A connection string do Neon está errada. Verifique!
+
+❌ Erro ao fazer login
+   → Execute "npx prisma migrate dev" novamente
+   → Execute "npx prisma db seed" novamente
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 DICA: Se estiver com dúvidas, siga o vídeo tutorial em neon.tech
+         Leva 2 minutos para criar o banco!
+
+╔══════════════════════════════════════════════════════════════════╗
+║  Depois desses passos, seu sistema estará 100% FUNCIONAL! 🎉    ║
+╚══════════════════════════════════════════════════════════════════╝
+

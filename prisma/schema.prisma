@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Barbershop {
+  id        String      @id @default(cuid())
+  name      String
+  slug      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  
+  ownerId   String      @unique
+  owner     User        @relation("BarbershopOwner", fields: [ownerId], references: [id])
+
+  users       User[]       @relation("BarbershopUsers")
+  queues      Queue[]
+  attendances Attendance[]
+}
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  password      String
+  name          String
+  role          Role        @default(BARBER)
+  isActive      Boolean     @default(true)
+  pauseReason   String?
+  pausedAt      DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  barbershopId  String?
+  barbershop    Barbershop? @relation("BarbershopUsers", fields: [barbershopId], references: [id], onDelete: Cascade)
+  
+  ownedShop     Barbershop? @relation("BarbershopOwner")
+
+  queues        Queue[]
+  attendances   Attendance[]
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  BARBER
+}
+
+enum QueueStatus {
+  WAITING
+  ATTENDING
+  PAUSED
+}
+
+model Queue {
+  id            String      @id @default(cuid())
+  position      Int
+  status        QueueStatus @default(WAITING)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  attendanceId  String?     @unique
+  attendance    Attendance? @relation(fields: [attendanceId], references: [id])
+  
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  barbershopId  String
+  barbershop    Barbershop  @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  
+  @@unique([barbershopId, userId, status])
+  @@index([barbershopId, status, position])
+}
+
+model Attendance {
+  id           String   @id @default(cuid())
+  
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  queue        Queue?
+
+  startedAt    DateTime  @default(now())
+  finishedAt   DateTime?
+  duration     Int?      // Minutos
+  serviceType  String?
+  value        Decimal?
+  notes        String?
+
+  createdAt    DateTime @default(now())
+  
+  @@index([barbershopId, startedAt])
+  @@index([userId, startedAt])
+}
+
