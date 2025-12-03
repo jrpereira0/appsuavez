@@ -7,8 +7,8 @@ import { Pause, Play, Trash2, User, X } from 'lucide-react'
 
 interface BarberCardProps {
   barber: UserType
-  onTogglePause: (userId: string, pauseReason?: string) => Promise<void>
-  onDelete: (userId: string) => Promise<void>
+  onTogglePause: (userId: string, pauseReason?: string) => Promise<{ success: boolean; error?: any }>
+  onDelete: (userId: string) => Promise<{ success: boolean; error?: any }>
 }
 
 export default function BarberCard({ barber, onTogglePause, onDelete }: BarberCardProps) {
