@@ -8,9 +8,15 @@ export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session || (session.user.role !== 'OWNER' && session.user.role !== 'ADMIN')) {
+    if (!session || !session.user?.barbershopId) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
+
+    if (session.user.role !== 'OWNER' && session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
+    }
+
+    const barbershopId = session.user.barbershopId
 
     const body = await request.json()
     const { queueId, serviceType, value, notes } = body
@@ -25,7 +31,7 @@ export async function PUT(request: NextRequest) {
     const queueItem = await prisma.queue.findFirst({
       where: {
         id: queueId,
-        barbershopId: session.user.barbershopId,
+        barbershopId,
         status: 'ATTENDING',
       },
       include: {
@@ -64,7 +70,7 @@ export async function PUT(request: NextRequest) {
     await prisma.$executeRaw`
       UPDATE "Queue"
       SET position = position - 1
-      WHERE "barbershopId" = ${session.user.barbershopId}
+      WHERE "barbershopId" = ${barbershopId}
         AND position > ${queueItem.position}
         AND status IN ('WAITING', 'ATTENDING')
     `
@@ -78,5 +84,3 @@ export async function PUT(request: NextRequest) {
     )
   }
 }
-
-

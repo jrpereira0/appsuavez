@@ -16,7 +16,7 @@ export function formatCurrency(value: number): string {
   }).format(value)
 }
 
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | string): string {
   return new Intl.DateTimeFormat('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -24,7 +24,7 @@ export function formatDate(date: Date): string {
   }).format(new Date(date))
 }
 
-export function formatDateTime(date: Date): string {
+export function formatDateTime(date: Date | string): string {
   return new Intl.DateTimeFormat('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -32,6 +32,15 @@ export function formatDateTime(date: Date): string {
     hour: '2-digit',
     minute: '2-digit',
   }).format(new Date(date))
+}
+
+export function formatDuration(minutes: number): string {
+  if (minutes < 60) {
+    return `${minutes}min`
+  }
+  const hours = Math.floor(minutes / 60)
+  const mins = minutes % 60
+  return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`
 }
 
 export function calculateDuration(startedAt: Date, finishedAt: Date): number {
@@ -42,5 +51,3 @@ export function calculateDuration(startedAt: Date, finishedAt: Date): number {
 export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ')
 }
-
-
